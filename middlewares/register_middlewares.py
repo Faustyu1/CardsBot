@@ -32,8 +32,8 @@ class RegisterMiddleware(BaseMiddleware):
             else:
                 created = False
                 await update_last_activity_group(event.chat.id)
-        if type(event) == Message:
-            if event.text.startswith("/start" or "/startgroup"):
+        if isinstance(event, Message) and event.text:
+            if event.text.startswith("/start") or event.text.startswith("/startgroup"):
                 data["created"] = created
                 return await handler(event, data)
 

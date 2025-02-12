@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 from typing import Dict
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, update, cast
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.dialects.postgresql import JSONB
 
 from database.models import User
 from utils.loader import engine
@@ -187,3 +188,80 @@ async def set_user_refer_code(telegram_id: int, code: str):
         user: User = (await session.execute(select(User).where(User.telegram_id == telegram_id))).scalar_one_or_none()
         user.from_link = code
         await session.commit()
+
+
+async def add_coins(telegram_id: int, coins: int, username: str = None, in_pm: bool = False) -> bool:
+    user = await get_user(telegram_id)
+    if user is None:
+        user = await create_user(telegram_id, username or "Гость", in_pm)
+    
+    async with AsyncSession(engine) as session:
+        user = (await session.execute(
+            select(User).where(User.telegram_id == telegram_id)
+        )).scalar_one()
+        user.coins += coins
+        await session.commit()
+        return True
+    
+
+async def get_coins(telegram_id: int) -> int:
+    user = await get_user(telegram_id)
+    if user is None:
+        return 0
+    
+    async with AsyncSession(engine) as session:
+        user = (await session.execute(
+            select(User).where(User.telegram_id == telegram_id)
+        )).scalar_one_or_none()
+        
+        return user.coins if user else 0
+    
+
+async def set_luck(telegram_id: int, luck: bool):
+    async with AsyncSession(engine) as session:
+        await session.execute(
+            update(User).where(User.telegram_id == telegram_id).values(luck=luck)
+        )
+        await session.commit()
+
+
+async def get_luck(telegram_id: int) -> bool:
+    async with AsyncSession(engine) as session:
+        user = (await session.execute(
+            select(User.luck).where(User.telegram_id == telegram_id)
+        )).scalar_one_or_none()
+        
+        return user if user is not None else False
+    
+
+async def add_dice_get(telegram_id: int):
+    async with AsyncSession(engine) as session:
+        await session.execute(
+            update(User).where(User.telegram_id == telegram_id).values(last_dice_play=datetime.now())
+        )
+        await session.commit()
+
+
+async def add_limited_card_to_user(user_id: int, card_id: int):
+    async with AsyncSession(engine) as session:
+        await session.execute(
+            update(User)
+            .where(User.telegram_id == user_id)
+            .values(
+                limited_cards=func.coalesce(
+                    User.limited_cards, 
+                    cast([], JSONB)
+                ).concat(cast([card_id], JSONB))
+            )
+        )
+        await session.commit()
+
+
+async def check_user_has_limited_card(user_id: int, card_id: int) -> bool:
+    async with AsyncSession(engine) as session:
+        user = (await session.execute(
+            select(User).where(User.telegram_id == user_id)
+        )).scalar_one_or_none()
+        if not user or not user.limited_cards:
+            return False
+        return card_id in user.limited_cards

@@ -1,0 +1,36 @@
+{
+    "cats": [
+        {
+            "id": "1",
+            "name": "Fluffy",
+            "price": 250,
+            "edition": 2000,
+            "description": "Fluffy cat",
+            "photo": "https://tinypic.host/images/2025/01/12/2025-01-12-18.30.16.jpg"
+        },
+        {
+            "id": "2",
+            "name": "two",
+            "price": 250,
+            "edition": 2000,
+            "description": "two cat",
+            "photo": "https://tinypic.host/images/2025/01/12/2025-01-12-18.30.16.jpg"
+        },
+        {
+            "id": "3",
+            "name": "three",
+            "price": 250,
+            "edition": 2000,
+            "description": "three cat",
+            "photo": "https://tinypic.host/images/2025/01/12/2025-01-12-18.30.16.jpg"
+        },
+        {
+            "id": "4",
+            "name": "four",
+            "price": 250,
+            "edition": 2000,
+            "description": "four cat",
+            "photo": "https://tinypic.host/images/2025/01/12/2025-01-12-18.30.16.jpg"
+        }
+    ]
+}

@@ -12,7 +12,7 @@ from database.statistic import get_groups_count_created_by_date, get_groups_coun
     get_users_count_created_by_date, \
     get_users_count_last_active_today, get_yesterday_groups_active, get_yesterday_users_active
 from database.user import get_all_users_with_pm_ids, get_user_with_pm_count
-from handlers.admin_dialogs.admin_states import AddAdminSG, AddRefLinkSG, AdminSG, DelSeasonSG, MailingSG, ViewRefLinkSG
+from handlers.admin_dialogs.admin_states import AddAdminSG, AddRefLinkSG, AdminSG, CreatePromoSG, DelSeasonSG, DeletePromoSG, MailingSG, ViewRefLinkSG
 
 
 async def message_to_mailing_handler(message: Message, message_input: Message, manager: DialogManager):
@@ -78,6 +78,10 @@ admin_dialog = Dialog(
         Row(
             Start(Const("Добавить админа"), id="add_admin", state=AddAdminSG.get_id),
             SwitchTo(Const("Ссылки"), id="links", state=AdminSG.choose_ref_action),
+        ),
+        Row(
+            Start(Const("Создать промокод"), id="create_promo", state=CreatePromoSG.get_name),
+            Start(Const("Удалить промокод"), id="delete_promo", state=DeletePromoSG.get_name),
         ),
         Start(Const("Сбросить сезон"), id="reset_season", state=DelSeasonSG.accept_del),
 

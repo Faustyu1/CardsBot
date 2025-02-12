@@ -36,7 +36,19 @@ async def delete_bonus_link(bonus_link: str) -> None:
         await session.commit()
 
 
-async def get_bonus_link(bonus_link: str) -> BonusLink:
+async def get_bonus_link(code: str) -> BonusLink:
     async with AsyncSession(engine, expire_on_commit=False) as session:
-        bonus_link = (await session.execute(select(BonusLink).where(BonusLink.code == bonus_link))).scalar_one_or_none()
-        return bonus_link
+        return (await session.execute(
+            select(BonusLink).where(BonusLink.code == code)
+        )).scalar_one_or_none()
+
+
+async def deactivate_bonus_link(code: str):
+    async with AsyncSession(engine, expire_on_commit=False) as session:
+        bonus = (await session.execute(
+            select(BonusLink).where(BonusLink.code == code)
+        )).scalar_one_or_none()
+        
+        if bonus:
+            bonus.is_active = False
+            await session.commit()

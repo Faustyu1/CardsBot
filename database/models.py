@@ -1,8 +1,9 @@
 import datetime
 from typing import List
 
-from sqlalchemy import ARRAY, BigInteger, Boolean, Date, DateTime, Integer, String, VARCHAR
+from sqlalchemy import ARRAY, BigInteger, Boolean, Column, Date, DateTime, Integer, String, VARCHAR
 from sqlalchemy.ext.asyncio import AsyncAttrs
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -17,7 +18,10 @@ class User(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
     nickname: Mapped[str] = mapped_column(VARCHAR(64), default="Гость", unique=False)
-    cards: Mapped[[int]] = mapped_column(MutableList.as_mutable(ARRAY(Integer)), default=[])
+    cards: Mapped[list[int]] = mapped_column(
+        MutableList.as_mutable(ARRAY(Integer)), default=[]
+    )
+    limited_cards = Column(JSONB, nullable=False, default=list)
     points: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     all_points: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     last_usage: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
@@ -40,6 +44,11 @@ class User(Base):
         DateTime, nullable=True
     )
     from_link: Mapped[str] = mapped_column(String, nullable=True, default=None)
+    coins: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
+    luck: Mapped[bool] = mapped_column(Boolean, default=False)
+    last_dice_play: Mapped[datetime.datetime] = mapped_column(
+        DateTime, nullable=True
+    )
 
     def check_promo_expired(self, promo: str) -> bool:
         return promo in self.expired_promo_codes if self.expired_promo_codes is not None else False
@@ -47,7 +56,7 @@ class User(Base):
     def check_bonus_available(self) -> bool:
         if self.last_bonus_get is None:
             return True
-        return datetime.datetime.now() >= self.last_bonus_get + datetime.timedelta(hours=12)
+        return datetime.datetime.now() >= self.last_bonus_get + datetime.timedelta(hours=4)
 
 
 class App(Base):
@@ -71,6 +80,7 @@ class Group(Base):
     )
     in_group: Mapped[bool] = mapped_column(Boolean, default=True)
     from_link: Mapped[str] = mapped_column(String, nullable=True, default=None)
+    comments_on: Mapped[bool] = mapped_column(Boolean, default=True)
 
 
 class Card(Base):
@@ -81,6 +91,7 @@ class Card(Base):
     photo: Mapped[str] = mapped_column(VARCHAR(160), nullable=False)
     points: Mapped[int] = mapped_column(Integer, nullable=False)
     rarity: Mapped[str] = mapped_column(VARCHAR(80), nullable=False)
+    description: Mapped[str] = mapped_column(VARCHAR(255), nullable=True)
 
 
 class Promo(Base):
@@ -109,6 +120,7 @@ class BonusLink(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     code: Mapped[str] = mapped_column(VARCHAR(80), nullable=False, unique=True)
     for_user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    is_active = Column(Boolean, default=True)
 
 
 class RefLink(Base):
@@ -116,3 +128,15 @@ class RefLink(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     code: Mapped[str] = mapped_column(VARCHAR(80), nullable=False, unique=True)
+
+
+class LimitedCards(Base):
+    __tablename__ = 'limited_cards'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    price: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    edition: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    buy_count: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
+    description: Mapped[str] = mapped_column(String, nullable=True)
+    photo: Mapped[str] = mapped_column(String, nullable=False)

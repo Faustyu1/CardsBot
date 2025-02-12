@@ -8,17 +8,28 @@ from utils.loader import engine
 
 
 async def create_group(group_id: int, title: str) -> Group:
-    """Creating group"""
     async with AsyncSession(engine) as session:
-        group = Group(group_id=group_id, title=title)
+        group = Group(group_id=group_id, title=title, comments_on=True)
         session.add(group)
         await session.commit()
         group = (await session.execute(select(Group).where(Group.group_id == group_id))).scalar_one()
         return group
+    
+
+async def set_comments_active(chat_id: int, to_set: bool) -> None:
+    async with AsyncSession(engine) as session:
+        group: Group = (await session.execute(select(Group).where(Group.group_id == chat_id))).scalar_one_or_none()
+        
+        if group:
+            group.comments_on = to_set
+            await session.commit()
+            
+            updated_group = (await session.execute(
+                select(Group).where(Group.group_id == chat_id)
+            )).scalar_one_or_none()
 
 
 async def get_group(group_id: int) -> Group:
-    """Getting exists group or none"""
     async with AsyncSession(engine) as session:
         group = (await session.execute(select(Group).where(Group.group_id == group_id))).scalar_one_or_none()
         return group

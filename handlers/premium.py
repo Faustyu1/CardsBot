@@ -3,9 +3,10 @@ import random
 from datetime import timedelta
 
 from aiogram import F, Router, types
-from aiogram.types import CallbackQuery, LabeledPrice
+from aiogram.types import CallbackQuery, LabeledPrice, PreCheckoutQuery, SuccessfulPayment
 from aiogram_dialog import DialogManager
-
+from aiogram.utils.text_decorations import html_decoration
+from aiogram.enums.parse_mode import ParseMode
 from database.premium import add_premium
 from utils.kb import payment_crypto_keyboard, payment_keyboard, premium_keyboard
 from utils.loader import crypto
@@ -18,25 +19,21 @@ premium_router = Router()
 async def send_payment_method_selection(callback, user_id, unique_id):
     markup = await premium_keyboard(unique_id)
     await callback.bot.send_message(user_id, f"{PREMIUM_TEXT} Выберите способ оплаты премиума:",
-                                    reply_markup=markup)
+                                 reply_markup=markup,parse_mode=ParseMode.HTML)   
 
 
 @premium_router.callback_query(F.data.startswith("pay_stars_"))
 async def pay_with_stars(callback: CallbackQuery, dialog_manager: DialogManager):
-    unique_id = callback.data.split('_')[-1]
-    if unique_id not in user_button or user_button[unique_id] != str(callback.from_user.id):
-        await callback.answer(random.choice(responses), show_alert=True)
-        return
     try:
         prices = [LabeledPrice(label="XTR", amount=35)]
         await callback.message.answer_invoice(
-            title="🌟 Комару премиум",
-            description="Покупка комару премиума",
+            title="🌟 Premium",
+            description="Покупка премиума!",
             prices=prices,
             provider_token="",
             payload="komaru_premium",
             currency="XTR",
-            reply_markup=await payment_keyboard(),
+            reply_markup=await payment_keyboard(35),
         )
         await callback.bot.delete_message(callback.message.chat.id, callback.message.message_id)
     except Exception as e:
@@ -44,14 +41,19 @@ async def pay_with_stars(callback: CallbackQuery, dialog_manager: DialogManager)
         logging.error(f"Error in pay_with_stars: {e}")
 
 
-async def handle_pre_checkout_query(pre_checkout_query: types.PreCheckoutQuery):
-    await pre_checkout_query.bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
+@premium_router.pre_checkout_query()
+async def on_pre_checkout_query(
+    pre_checkout_query: PreCheckoutQuery,
+):
+    await pre_checkout_query.answer(ok=True)
 
 
-async def handle_successful_payment(message: types.Message):
+@premium_router.message(F.successful_payment, lambda message: message.successful_payment.invoice_payload == "komaru_premium")
+async def handle_komaru_premium(message: types.Message):
+    successful_payment = message.successful_payment
     await add_premium(message.from_user.id, timedelta(days=30))
-    await message.answer(
-        '🌟 Спасибо за покупку Премиума! Наслаждайтесь эксклюзивными преимуществами.')
+    await message.answer("🌟 Спасибо за покупку Премиума! Наслаждайтесь эксклюзивными преимуществами.")
+        
 
 
 @premium_router.callback_query(F.data.startswith("pay_crypto_"))
@@ -107,7 +109,3 @@ async def get_invoice_status(invoice_id):
     except Exception as e:
         print(f"Ошибка при получении данных инвойса: {e}")
         return None
-
-
-premium_router.pre_checkout_query.register(handle_pre_checkout_query)
-premium_router.message.register(handle_successful_payment, F.successful_payment)
