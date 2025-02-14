@@ -2,7 +2,7 @@
   "cats": [
     {
       "id": "1",
-      "name": "Комару - кукуруза",
+      "name": "Карта1",
       "photo": "https://tinypic.host/",
       "points": "1000",
       "rarity": "Редкая" ,
@@ -10,7 +10,7 @@
     },
     {
       "id": "2",
-      "name": "Сладкая комару",
+      "name": "Карта2",
       "photo": "https://tinypic.host/",
       "points": "3000",
       "rarity": "Сверхредкая",
@@ -18,7 +18,7 @@
     },
     {
       "id": "3",
-      "name": "Комару сидящая на коле",
+      "name": "Карта3",
       "photo": "https://tinypic.host/",
       "points": "5000",
       "rarity": "Мифическая",
@@ -26,7 +26,7 @@
     },
     {
       "id": "4",
-      "name": "Комару с уткой на голове",
+      "name": "Карта4",
       "photo": "https://tinypic.host/",
       "points": "10000",
       "rarity": "Легендарная"

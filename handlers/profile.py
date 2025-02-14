@@ -11,7 +11,7 @@ from sqlalchemy import func
 from database.cards import get_all_cards, get_card, get_lcard
 from database.models import Card, User
 from database.premium import check_premium
-from database.top import get_me_on_top, get_top_users_by_all_points, get_top_users_by_cards, get_top_users_by_points
+from database.top import get_me_on_top, get_top_users_by_all_points, get_top_users_by_cards, get_top_users_by_points, get_top_users_by_coins
 from database.user import get_user, set_love_card
 from filters import ProfileFilter
 from handlers.premium import send_payment_method_selection
@@ -352,7 +352,7 @@ async def top_komaru(callback: types.CallbackQuery):
     if unique_id not in user_button or user_button[unique_id] != str(callback.from_user.id):
         await callback.answer(random.choice(responses), show_alert=True)
         return
-    markup = await top_kb(callback, "all_top")
+    markup = await top_kb(callback, "list_top")
     await callback.message.answer(
         text="Топ 10 пользователей по карточкам. Выберите кнопку:",
         reply_markup=markup)
@@ -360,7 +360,7 @@ async def top_komaru(callback: types.CallbackQuery):
 
 @profile_router.message(Command("top"))
 async def top_komaru_command(msg: Message):
-    markup = await top_kb(msg, "all_top")
+    markup = await top_kb(msg, "list_top")
     await msg.answer("🏆 Топ 10 игроков:\n<blockquote> Выберите по какому значению показать топ</blockquote>", reply_markup=markup,parse_mode=ParseMode.HTML)
 
 
@@ -383,7 +383,7 @@ async def cards_top_callback(callback: types.CallbackQuery):
         top = await get_top_users_by_cards()
         user_rank = await get_me_on_top(func.cardinality(User.cards), user_id)
 
-        message_text = "🃏 Топ 10 игроков по картам за сезон\n\n"
+        message_text = "🃏 Топ 10 игроков по карточкам за сезон\n\n"
         for top_user in top:
             message_text += f"{top_user[0]}. {top_user[1]} {top_user[2]}: {top_user[3]} карточек"
             if user_id == 6184515646:
@@ -422,6 +422,21 @@ async def cards_top_callback(callback: types.CallbackQuery):
                              f"({user.nickname}: {user.all_points} очков)")
 
         markup = await top_kb(callback, "all")
+
+    elif choice == "сoins":
+        top = await get_top_users_by_coins()
+        user_rank = await get_me_on_top(User.coins, user_id)
+
+        message_text = "💰 Топ 10 игроков по монетам за всё время\n\n"
+        for top_user in top:
+            message_text += f"{top_user[0]}. {top_user[1]} {top_user[2]}: {top_user[3]} монет\n"
+
+        if user_rank and user_rank > 10:
+            message_text += (f"\n🎖️ Ваше место • {user_rank} "
+                             f"({user.nickname}: {user.coins} монет)")
+
+        markup = await top_kb(callback, "coins")
+
     else:
         markup = await top_kb(callback, "all")
 

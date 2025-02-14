@@ -33,7 +33,7 @@ from database.premium import check_premium
 from middlewares import RegisterMiddleware
 from filters.FloodWait import RateLimitFilter
 from utils.loader import bot
-from data.text import forbidden_symbols, settings_chat, post_msg
+from data.text import forbidden_symbols, settings_chat, name_card
 import validators
 
 
@@ -76,7 +76,7 @@ async def komaru_cards_function(msg: Message, dialog_manager: DialogManager):
 
     if user.check_bonus_available():
         bonus_message = (
-            "🎁 Получай <b>карточку</b> раз в 6 часов подписавшись на каналы спонсоров"
+            "🎁 Получай <b>карточку</b> раз в 4 часа подписавшись на каналы спонсоров"
         )
         markup = await get_bonus_keyboard((await msg.bot.get_me()).username, msg.from_user.id)
     else:
@@ -110,7 +110,7 @@ async def komaru_cards_function(msg: Message, dialog_manager: DialogManager):
                     f"\n\n💎 Редкость: <b>{chosen_cat.rarity}</b>\n "
                     f"✨ Очки: +<b>{chosen_cat.points}</b> [{user.points + int(chosen_cat.points)}]\n"
                     f"💰 Монеты • +{coins} [{coins_db + coins}]\n"
-                    f"{description_text}\n\n"
+                    f"{description_text}\n"
                     f"{bonus_message}",
             reply_to_message_id=msg.message_id,
             parse_mode=ParseMode.HTML,
@@ -217,12 +217,12 @@ async def on_bot_added(update: ChatMemberUpdated):
     elif update.chat.type in ["group", "supergroup"]:
         await in_group_change(update.chat.id, True)
         await update.answer(
-            """👋 Добро пожаловать в мир Карточек!
+            f"""👋 Добро пожаловать в мир Карточек!
     
 🌟 Собирайте уникальные карточки и соревнуйтесь с другими игроками.
     
 Как начать:
-1. Напишите "Карта" для получения первой карточки.
+1. Напишите "{name_card}" для получения первой карточки.
 2. Используйте команду /help для информации о доступных командах.
     
     Удачи в нашей вселенной!"""

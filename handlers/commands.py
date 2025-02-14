@@ -35,7 +35,7 @@ async def handler_bot_start(msg: Message, command: CommandObject):
 
     user_id = link.for_user_id
     if user_id != msg.from_user.id:
-        await msg.answer("Это не ваш бонус. Напишите \"комару\" и перейдите по ссылке для получения бонуса")
+        await msg.answer("Это не ваш бонус. Напишите /bonus и перейдите по ссылке для получения бонуса")
         return
 
     user = await get_user(msg.from_user.id)

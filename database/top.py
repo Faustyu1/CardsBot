@@ -54,6 +54,22 @@ async def get_top_users_by_all_points():
             top += [[i, icon, top_user.nickname, top_user.all_points]]
             i += 1
         return top
+    
+
+async def get_top_users_by_coins():
+    async with (AsyncSession(engine) as session):
+        top_users = (
+            await session.execute(
+                select(User).order_by(desc(User.coins)).limit(10)
+            )
+        ).scalars().all()
+        top = []
+        i = 1
+        for top_user in top_users:
+            icon = "💎" if await check_premium(top_user.premium_expire) else ""
+            top += [[i, icon, top_user.nickname, top_user.coins]]
+            i += 1
+        return top
 
 
 async def get_me_on_top(by, telegram_id: int):

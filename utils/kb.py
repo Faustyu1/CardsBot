@@ -7,7 +7,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from database.bonus_link import create_bonus_link
 from utils.states import user_button
-
+from utils.loader import bot
 
 async def start_kb(msg: Message):
     builder = InlineKeyboardBuilder()
@@ -88,46 +88,46 @@ async def get_limited_card_navigation_keyboard(user_id, card_index, limited_card
 
 async def top_kb(callback, choice):
     builder = InlineKeyboardBuilder()
-    if choice == "all_top":
+    if choice == "list_top":
         unique_id = str(random.randint(10000, 9999999999))
         user_button[unique_id] = str(callback.from_user.id)
-        button_1 = types.InlineKeyboardButton(text="🃏 Топ по карточкам",
-                                              callback_data=f'top_cards_cards_{unique_id}')
-        button_2 = types.InlineKeyboardButton(text="По очкам",
+        button_1 = types.InlineKeyboardButton(text="✨По очкам",
                                               callback_data=f'top_cards_point_{unique_id}')
-        button_3 = types.InlineKeyboardButton(text="⌛️ Топ за все время",
-                                              callback_data=f'top_cards_all_{unique_id}') 
+        button_2 = types.InlineKeyboardButton(text="🃏 По карточкам",
+                                              callback_data=f'top_cards_cards_{unique_id}')
+        button_3 = types.InlineKeyboardButton(text="💰 По монетам",
+                                              callback_data=f'top_cards_сoins_{unique_id}') 
         builder.add(button_1, button_2, button_3)
         builder.adjust(1,1)
         return builder.as_markup()
-    elif choice == "cards":
-        unique_id = str(random.randint(10000, 9999999999))
-        user_button[unique_id] = str(callback.from_user.id)
-        button_1 = types.InlineKeyboardButton(text="💯 Топ по очкам",
-                                              callback_data=f'top_cards_point_{unique_id}')
-        button_2 = types.InlineKeyboardButton(text="⌛️ Топ за все время",
-                                              callback_data=f'top_cards_all_{unique_id}')
-        builder.add(button_1, button_2)
-        return builder.as_markup()
     elif choice == "point":
-
         unique_id = str(random.randint(10000, 9999999999))
         user_button[unique_id] = str(callback.from_user.id)
-        button_1 = types.InlineKeyboardButton(text="🃏 Топ по карточкам",
-                                              callback_data=f'top_cards_cards_{unique_id}')
-        button_2 = types.InlineKeyboardButton(text="⌛️ Топ за все время",
-                                              callback_data=f'top_cards_all_{unique_id}')
-        builder.add(button_1, button_2)
-        return builder.as_markup()
-    elif choice == "all":
-
-        unique_id = str(random.randint(10000, 9999999999))
-        user_button[unique_id] = str(callback.from_user.id)
-        button_1 = types.InlineKeyboardButton(text="🃏 Топ по карточкам",
-                                              callback_data=f'top_cards_cards_{unique_id}')
-        button_2 = types.InlineKeyboardButton(text="💯 Топ по очкам",
+        button_1 = types.InlineKeyboardButton(text="За этот сезон",
                                               callback_data=f'top_cards_point_{unique_id}')
-        builder.add(button_1, button_2)
+        button_2 = types.InlineKeyboardButton(text="За все время",
+                                              callback_data=f'top_cards_all_{unique_id}')
+        button_3 = types.InlineKeyboardButton(text="Назад",
+                                              callback_data=f'top_komaru_{unique_id}')
+        builder.add(button_1, button_2, button_3)
+        builder.adjust(1,1,1)
+        return builder.as_markup()
+    
+    elif choice == "cards":
+
+        unique_id = str(random.randint(10000, 9999999999))
+        user_button[unique_id] = str(callback.from_user.id)
+        button_1 = types.InlineKeyboardButton(text="Назад",
+                                              callback_data=f'all_top_{unique_id}')
+        builder.add(button_1)
+        return builder.as_markup()
+    elif choice == "coins":
+
+        unique_id = str(random.randint(10000, 9999999999))
+        user_button[unique_id] = str(callback.from_user.id)
+        button_1 = types.InlineKeyboardButton(text="Назад",
+                                              callback_data=f'all_top_{unique_id}')
+        builder.add(button_1)
         return builder.as_markup()
 
 

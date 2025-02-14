@@ -28,7 +28,7 @@ async def get_titul(card_count):
     elif card_count > 100:
         return 'Продвинутый коллекционер'
     elif card_count > 50:
-        return 'Любитель Комару'
+        return f'Любитель {name_card_rod_padezh}'
     elif card_count > 20:
         return 'Начинающий коллекционер'
     else:
