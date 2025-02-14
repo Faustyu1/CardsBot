@@ -68,7 +68,7 @@ async def promo_use(telegram_id: int, promo: Promo) -> None:
         user.expired_promo_codes = (user.expired_promo_codes or []) + [promo.code]
 
         if promo.action == "reset_cd":
-            if await check_last_get(user.last_usage, check_premium(user.premium_expire)):
+            if await check_last_get(user.last_usage, await check_premium(user.premium_expire)):
                 raise IsAlreadyResetException
             user.last_usage = datetime.now() - timedelta(hours=3)
         elif promo.action == "add_premium":
