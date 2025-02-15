@@ -25,7 +25,7 @@ class User(Base):
     points: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     all_points: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     last_usage: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
-    love_card: Mapped[int] = mapped_column(Integer, nullable=True)
+    love_card: Mapped[dict] = mapped_column(JSONB, nullable=True)
     card_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     premium_expire: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
     is_banned: Mapped[bool] = mapped_column(Boolean, default=False)

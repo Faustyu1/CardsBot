@@ -62,11 +62,15 @@ async def user_profile(msg: Message, dialog_manager: DialogManager):
     titul = await get_titul(user.card_count)
     collected_cards = len(user.cards)
     total_cards = len(await get_all_cards())
-    favorite_card = await get_card(user.love_card)
-    if favorite_card is None:
-        favorite_card = "нету"
+    if user.love_card:
+        if user.love_card["is_limited"]:
+            favorite_card = await get_lcard(user.love_card["id"])
+        else:
+            favorite_card = await get_card(user.love_card["id"])
     else:
-        favorite_card = favorite_card.name
+        favorite_card = None
+
+    favorite_card_name = html_decoration.bold(html_decoration.quote(favorite_card.name)) if favorite_card else "нету"
     premium_status = await check_premium(user.premium_expire)
     premium_message = f"Премиум: активен до {user.premium_expire.date()}" if premium_status else "<blockquote>Рекомендуем приобрести Premium</blockquote>"
 
@@ -93,7 +97,7 @@ async def user_profile(msg: Message, dialog_manager: DialogManager):
             f"✨ Очки <b>• {user.points}</b>\n"
             f"💰 Монеты <b>• {user.coins}</b>\n"
             f"🏆 Титул <b>• {titul}</b>\n"
-            f"❤️‍🔥 Любимая карточка <b>• {favorite_card}</b>\n"
+            f"❤️‍🔥 Любимая карточка <b>• {favorite_card_name}</b>\n"
             f"{premium_message}\n"
             f"{dev_titul_message}\n"
         )
@@ -336,11 +340,13 @@ async def handle_love_card(callback: types.CallbackQuery):
 
     if card_type == "limited":
         card = await get_lcard(card_id)
+        is_limited = True
     else:
         card = await get_card(card_id)
+        is_limited = False
 
     if card is not None:
-        await set_love_card(user_id, card_id)
+        await set_love_card(user_id, card_id, is_limited)
         await bot.answer_callback_query(callback.id, f"Карточка '{card.name}' теперь ваша любимая!")
     else:
         await bot.answer_callback_query(callback.id, "Не найдено карточек с таким ID.")

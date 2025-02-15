@@ -1,0 +1,25 @@
+[project]
+name = "cardsbot"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "aiocryptopay~=0.4.5",
+    "aiogram~=3.13.1",
+    "aiogram-dialog>=2.2.0",
+    "alembic~=1.13.2",
+    "asyncio~=3.4.3",
+    "asyncpg>=0.30.0",
+    "cachetools~=5.5.0",
+    "colorama~=0.4.6",
+    "emoji~=2.12.1",
+    "flyerapi~=1.1.0",
+    "greenlet>=3.1.1",
+    "pydantic~=2.9.2",
+    "python-dotenv~=1.0.1",
+    "pyyaml~=6.0.2",
+    "schedule~=1.2.2",
+    "sqlalchemy~=2.0.35",
+    "validators~=0.34.0",
+]

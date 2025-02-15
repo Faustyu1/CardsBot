@@ -36,12 +36,13 @@ async def get_user_with_pm_count():
         return user_count
 
 
-async def set_love_card(telegram_id: int, love_card_id: int):
+async def set_love_card(telegram_id: int, love_card_id: int, is_limited: bool):
     async with AsyncSession(engine) as session:
         user: User = (await session.execute(select(User).where(User.telegram_id == telegram_id))).scalar_one_or_none()
         if user is None:
             return False
-        user.love_card = love_card_id
+        
+        user.love_card = {"id": love_card_id, "is_limited": is_limited}
         await session.commit()
         return True
 
