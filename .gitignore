@@ -25,3 +25,4 @@ venv/
 *.swp
 *.swoconfig.yaml
 config.yaml
+pyproject.toml
