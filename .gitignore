@@ -17,7 +17,6 @@ venv/
 # Environment files
 *.env
 .env
-.venv
 
 # Logs
 *.log
@@ -26,5 +25,3 @@ venv/
 *.swp
 *.swoconfig.yaml
 config.yaml
-uv.lock
-.python-version
