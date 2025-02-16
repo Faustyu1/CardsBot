@@ -16,3 +16,4 @@ pydantic~=2.9.2
 schedule~=1.2.2
 colorama~=0.4.6
 greenlet
+environs
