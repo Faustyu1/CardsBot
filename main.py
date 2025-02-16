@@ -36,16 +36,15 @@ async def main():
     await bot.delete_webhook(drop_pending_updates=True)
     commands = [
         BotCommand(command="start", description="Запустить бота"),
-        BotCommand(command="help", description="Помощь"),
-        BotCommand(command="profile", description="Ваш профиль"),
-        BotCommand(command="cards", description="Получить карточку"),
         BotCommand(command="help", description="📜 Помощь"),
+        BotCommand(command="market", description="🛍 Магазин уникальных подарков"),
         BotCommand(command="profile", description="👤 Ваш профиль"),
         BotCommand(command="cards", description="🃏 Получить карточку"),
         BotCommand(command="top", description="🏆 Топ игроков"),
         BotCommand(command="premium", description="🚀 Купить премиум"),
         BotCommand(command="shop", description="🛍 Игровой магазин"),
         BotCommand(command="diceplay", description="🎲 Испытать удачу"),
+        
     ]
     await bot.set_my_commands(commands)
     dp.startup.register(on_startup)
