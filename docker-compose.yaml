@@ -3,9 +3,7 @@ version: '3.9'
 services:
   app:
     build: .
-    container_name: python-app
-    ports:
-      - "5000:5000"  # Пример порта, ты можешь изменить, если нужно
+    container_name: cardsbot
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
       - ADMIN_IDS=${ADMIN_IDS}
@@ -17,33 +15,11 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-    depends_on:
-      - db
     networks:
       - app_network
     volumes:
       - .:/app
     restart: always
-
-  db:
-    image: postgres:15
-    container_name: postgres-db
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "5432:5432"
-    networks:
-      - app_network
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: always
-
-volumes:
-  postgres_data:
-    driver: local
-
 networks:
   app_network:
     driver: bridge

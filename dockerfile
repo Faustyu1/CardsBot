@@ -7,14 +7,11 @@ WORKDIR /app
 # Копируем файл зависимостей в контейнер
 COPY requirements.txt .
 
-# Устанавливаем зависимости
+# Устанавливаем все зависимости из requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем весь проект в контейнер
 COPY . .
 
-# Создаём виртуальное окружение
-RUN python3 -m venv venv
-
-# Активируем виртуальное окружение и запускаем приложение
-CMD ["sh", "-c", "source venv/bin/activate && python3 main.py"]
+# Запускаем бота
+CMD ["python3", "main.py"]
