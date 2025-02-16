@@ -2,9 +2,8 @@
 
 ## Запуск бота
 
-git clone faustyu1/cardsbot
-docker-compose up --build
-docker-compose up
+2. docker-compose up --build
+3. docker-compose up
 файл .env
 ```.env
 BOT_TOKEN=1234343:AABBCCEE
