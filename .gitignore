@@ -20,7 +20,7 @@ venv/
 
 # Logs
 *.log
-
+/log
 # Other temporary files
 *.swp
 *.swoconfig.yaml

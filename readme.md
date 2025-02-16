@@ -9,23 +9,20 @@ source venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
-3. Создайте и заполните файл config.yaml
-```yaml
-bot:
-  telegram:
-    token: "token"
-  cryptoPay:
-    token: "token"
-  flyer:
-    token: "token"
-  admins: [77000]
-database:
-  driver: "postgresql+asyncpg"
-  host: "localhost"
-  port: 5432
-  database: "komaru_cards"
-  user: "postgres"
-  password: "postgres"
+3. Создайте и заполните файл .env
+```.env
+BOT_TOKEN=1234343:AABBCCEE
+ADMIN_IDS=77000,77001
+CRYPTO_TOKEN=1234343:AABBOOCCEE
+FLYER_TOKEN=FL-lekLE-lekLE-lekLE-lekLE
+
+# Database Configuration
+DB_DRIVER=postgresql+asyncpg
+DB_HOST=host
+DB_PORT=5432
+DB_NAME=folt_copy
+DB_USER=user
+DB_PASSWORD="password"
 ```
 4. Запустите бота
 ```bash

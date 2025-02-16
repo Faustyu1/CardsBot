@@ -1,15 +1,19 @@
+import os
 from collections import defaultdict
 from typing import Any
 import logging
+from logging.handlers import RotatingFileHandler
 
-
+# Constants
 LOG_TO_CONSOLE = False
-
 LOGGING_COOLDOWN = 3
 FORMAT = '{asctime} - [{levelname}] {filename}:{funcName}:{lineno} {name} - {message}'
 INFO = logging.INFO
 ERROR = logging.ERROR
 
+# Create logs directory if it doesn't exist
+LOGS_DIR = "logs"
+os.makedirs(LOGS_DIR, exist_ok=True)
 
 class CooldownFilter(logging.Filter):
     """Do not print same line if time after previous line less or equal <COOLDOWN> seconds. Defaults to 5 seconds"""
@@ -36,17 +40,31 @@ class CooldownFilter(logging.Filter):
             return False
 
 
-fileHandler = logging.FileHandler(filename="log.log")
-fileHandler.addFilter(CooldownFilter())
-fileHandler.setLevel(INFO)
+rotating_handler = RotatingFileHandler(
+    filename=os.path.join(LOGS_DIR, "bot.log"),
+    maxBytes=5 * 1024 * 1024,  
+    backupCount=4, 
+    encoding='utf-8'
+)
+rotating_handler.addFilter(CooldownFilter())
+rotating_handler.setLevel(INFO)
+
 
 streamHandler = logging.StreamHandler()
 streamHandler.addFilter(CooldownFilter())
 streamHandler.setLevel(INFO)
 
-handlers: list[logging.Handler] = [fileHandler, streamHandler] if LOG_TO_CONSOLE else [fileHandler]
 
-logging.basicConfig(format=FORMAT, level=INFO, style="{", handlers=handlers)
+handlers = [rotating_handler, streamHandler] if LOG_TO_CONSOLE else [rotating_handler]
+
+
+logging.basicConfig(
+    format=FORMAT,
+    level=INFO,
+    style="{",
+    handlers=handlers
+)
+
 
 logging.getLogger("aiogram").setLevel(INFO)
 logging.getLogger("aiohttp").setLevel(INFO)
