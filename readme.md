@@ -2,16 +2,10 @@
 
 ## Запуск бота
 
-1. Создайте и активируйте venv
-```bash
-python3 -m venv venv
-source venv/bin/activate
- ```
-2. Установите зависимости:
-```bash
-pip install -r requirements.txt
-```
-3. Создайте и заполните файл .env
+git clone faustyu1/cardsbot
+docker-compose up --build
+docker-compose up
+файл .env
 ```.env
 BOT_TOKEN=1234343:AABBCCEE
 ADMIN_IDS=77000,77001
@@ -26,10 +20,7 @@ DB_NAME=folt_copy
 DB_USER=user
 DB_PASSWORD="password"
 ```
-4. Запустите бота
-```bash
-python3 main.py
-```
+
 
 ## Файлы для заполнения
 1. data/config.json
