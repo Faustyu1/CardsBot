@@ -1,3 +1,5 @@
+# CardsBot for funny in Telegram
+
 ## Запуск бота
 
 1. Создайте и активируйте venv
