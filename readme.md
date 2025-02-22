@@ -4,7 +4,7 @@
 
 2. docker-compose up --build
 3. docker-compose up
-файл .env (Либо создать .env файл вручную и заполнить по обрацу ниже)
+4. заполнить файл .env
 ```.env
 BOT_TOKEN=1234343:AABBCCEE
 ADMIN_IDS=77000,77001
@@ -13,25 +13,14 @@ FLYER_TOKEN=FL-lekLE-lekLE-lekLE-lekLE
 
 # Database Configuration
 DB_DRIVER=postgresql+asyncpg
-DB_HOST=host #айпи дедика
+DB_HOST=ip
 DB_PORT=5432
 DB_NAME=folt_copy
 DB_USER=user
 DB_PASSWORD="password"
 ```
-4. Создайте и активируйте venv
-```bash
-python3 -m venv venv
-source venv/bin/activate
- ```
-5. Установите зависимости:
-```bash
-pip install -r requirements.txt
-```
-6. Запустите бота
-```bash
-python3 main.py
-```
+5. Чтобы остановить контейнер пропишите docker-compose stop
+
 
 ## Файлы для заполнения
 1. data/config.json
