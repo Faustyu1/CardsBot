@@ -5,6 +5,7 @@ services:
     build: .
     container_name: cardsbot
     environment:
+      - TZ=Europe/Moscow
       - BOT_TOKEN=${BOT_TOKEN}
       - ADMIN_IDS=${ADMIN_IDS}
       - CRYPTO_TOKEN=${CRYPTO_TOKEN}
@@ -19,6 +20,8 @@ services:
       - app_network
     volumes:
       - .:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: always
 networks:
   app_network:

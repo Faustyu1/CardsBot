@@ -11,7 +11,7 @@ from sqlalchemy import func
 from database.cards import get_all_cards, get_card, get_lcard
 from database.models import Card, User
 from database.premium import check_premium
-from database.top import get_me_on_top, get_top_users_by_all_points, get_top_users_by_cards, get_top_users_by_points, get_top_users_by_coins
+from database.top import get_me_on_top, get_top_users_by_all_points, get_top_users_by_cards, get_top_users_by_points
 from database.user import get_user, set_love_card
 from filters import ProfileFilter
 from handlers.premium import send_payment_method_selection

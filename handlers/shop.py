@@ -112,7 +112,6 @@ async def boost_callback(callback: CallbackQuery):
             else:
                 await callback.answer("Вы уже можете получить карточку!")
 
-
 @shop_router.pre_checkout_query()
 async def on_pre_checkout_query(
     pre_checkout_query: PreCheckoutQuery,
@@ -144,24 +143,21 @@ async def handle_coins_payment(message: Message):
     else:
         await message.answer("Ошибка при добавлении монет. Попробуйте повторить позже.")
 
-
 @shop_router.message(Command("diceplay"))
 async def diceplay(msg: Message):
     user = await get_user(msg.from_user.id)
-
     if user and user.last_dice_play:
         time_since_last_throw = datetime.now() - user.last_dice_play
-        if time_since_last_throw < timedelta(minutes=7):
-            remaining_time = 7 - time_since_last_throw.seconds // 60
-            await msg.reply(text=dice_limit.format(remaining_time), parse_mode="HTML")
+        cooldown = timedelta(minutes=7)
+        if time_since_last_throw < cooldown:
+            remaining_time = (cooldown - time_since_last_throw).total_seconds() // 60  # Учитываем всё время
+            await msg.reply(text=dice_limit.format(int(remaining_time)), parse_mode="HTML")
             return
-
     dice = await msg.bot.send_dice(
         chat_id=msg.chat.id,
         reply_to_message_id=msg.message_id,
     )
-    dice_value = int(dice.dice.value)
-
+    dice_value = dice.dice.value
     await asyncio.sleep(3)
     await add_coins(
         msg.from_user.id, 
@@ -169,8 +165,8 @@ async def diceplay(msg: Message):
         msg.from_user.username, 
         in_pm=(msg.chat.type == "private")
     )
-
     await add_dice_get(msg.from_user.id)
+
     await msg.reply(
         text=dice_game.format(dice_value, dice_value),
         parse_mode="HTML"
