@@ -84,7 +84,7 @@ async def user_profile(msg: Message, dialog_manager: DialogManager):
 
             photo_cache = file_id
         else:
-            photo_cache = 'https://files.catbox.moe/3umj6l.jpg'
+            photo_cache = 'https://tinypic.host/images/2025/02/14/cat.jpeg'
 
         caption = (
             f"Профиль «{html_decoration.bold(html_decoration.quote(user.nickname))}»\n\n"
