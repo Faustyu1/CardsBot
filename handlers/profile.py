@@ -62,15 +62,11 @@ async def user_profile(msg: Message, dialog_manager: DialogManager):
     titul = await get_titul(user.card_count)
     collected_cards = len(user.cards)
     total_cards = len(await get_all_cards())
-    if user.love_card:
-        if user.love_card["is_limited"]:
-            favorite_card = await get_lcard(user.love_card["id"])
-        else:
-            favorite_card = await get_card(user.love_card["id"])
+    favorite_card = await get_card(user.love_card['id'] if isinstance(user.love_card, dict) else user.love_card)
+    if favorite_card is None:
+        favorite_card = "нету"
     else:
-        favorite_card = None
-
-    favorite_card_name = html_decoration.bold(html_decoration.quote(favorite_card.name)) if favorite_card else "нету"
+        favorite_card = favorite_card.name
     premium_status = await check_premium(user.premium_expire)
     premium_message = f"Премиум: активен до {user.premium_expire.date()}" if premium_status else "<blockquote>Рекомендуем приобрести Premium</blockquote>"
 
@@ -88,7 +84,7 @@ async def user_profile(msg: Message, dialog_manager: DialogManager):
 
             photo_cache = file_id
         else:
-            photo_cache = 'https://tinypic.host/images/2025/02/14/cat.jpeg'
+            photo_cache = 'https://files.catbox.moe/3umj6l.jpg'
 
         caption = (
             f"Профиль «{html_decoration.bold(html_decoration.quote(user.nickname))}»\n\n"
@@ -97,7 +93,7 @@ async def user_profile(msg: Message, dialog_manager: DialogManager):
             f"✨ Очки <b>• {user.points}</b>\n"
             f"💰 Монеты <b>• {user.coins}</b>\n"
             f"🏆 Титул <b>• {titul}</b>\n"
-            f"❤️‍🔥 Любимая карточка <b>• {favorite_card_name}</b>\n"
+            f"❤️‍🔥 Любимая карточка <b>• {favorite_card}</b>\n"
             f"{premium_message}\n"
             f"{dev_titul_message}\n"
         )
@@ -334,19 +330,11 @@ async def navigate_cards(callback: types.CallbackQuery):
 @profile_router.callback_query(F.data.startswith("love_"))
 async def handle_love_card(callback: types.CallbackQuery):
     parts = callback.data.split('_')
-    card_type = parts[1]
-    user_id = int(parts[2])
-    card_id = int(parts[3])
+    user_id, card_id = int(parts[1]), int(parts[2])
 
-    if card_type == "limited":
-        card = await get_lcard(card_id)
-        is_limited = True
-    else:
-        card = await get_card(card_id)
-        is_limited = False
-
+    card = await get_card(card_id)
     if card is not None:
-        await set_love_card(user_id, card_id, is_limited)
+        await set_love_card(user_id, card_id)
         await bot.answer_callback_query(callback.id, f"Карточка '{card.name}' теперь ваша любимая!")
     else:
         await bot.answer_callback_query(callback.id, "Не найдено карточек с таким ID.")
@@ -358,7 +346,7 @@ async def top_komaru(callback: types.CallbackQuery):
     if unique_id not in user_button or user_button[unique_id] != str(callback.from_user.id):
         await callback.answer(random.choice(responses), show_alert=True)
         return
-    markup = await top_kb(callback, "list_top")
+    markup = await top_kb(callback, "all_top")
     await callback.message.answer(
         text="Топ 10 пользователей по карточкам. Выберите кнопку:",
         reply_markup=markup)
@@ -366,7 +354,7 @@ async def top_komaru(callback: types.CallbackQuery):
 
 @profile_router.message(Command("top"))
 async def top_komaru_command(msg: Message):
-    markup = await top_kb(msg, "list_top")
+    markup = await top_kb(msg, "all_top")
     await msg.answer("🏆 Топ 10 игроков:\n<blockquote> Выберите по какому значению показать топ</blockquote>", reply_markup=markup,parse_mode=ParseMode.HTML)
 
 
@@ -389,7 +377,7 @@ async def cards_top_callback(callback: types.CallbackQuery):
         top = await get_top_users_by_cards()
         user_rank = await get_me_on_top(func.cardinality(User.cards), user_id)
 
-        message_text = "🃏 Топ 10 игроков по карточкам за сезон\n\n"
+        message_text = "🃏 Топ 10 игроков по картам за сезон\n\n"
         for top_user in top:
             message_text += f"{top_user[0]}. {top_user[1]} {top_user[2]}: {top_user[3]} карточек"
             if user_id == 6184515646:
@@ -428,21 +416,6 @@ async def cards_top_callback(callback: types.CallbackQuery):
                              f"({user.nickname}: {user.all_points} очков)")
 
         markup = await top_kb(callback, "all")
-
-    elif choice == "сoins":
-        top = await get_top_users_by_coins()
-        user_rank = await get_me_on_top(User.coins, user_id)
-
-        message_text = "💰 Топ 10 игроков по монетам за всё время\n\n"
-        for top_user in top:
-            message_text += f"{top_user[0]}. {top_user[1]} {top_user[2]}: {top_user[3]} монет\n"
-
-        if user_rank and user_rank > 10:
-            message_text += (f"\n🎖️ Ваше место • {user_rank} "
-                             f"({user.nickname}: {user.coins} монет)")
-
-        markup = await top_kb(callback, "coins")
-
     else:
         markup = await top_kb(callback, "all")
 
