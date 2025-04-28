@@ -18,6 +18,7 @@ DB_PORT=5432
 DB_NAME=folt_copy
 DB_USER=user
 DB_PASSWORD="password"
+WATA_API_KEY=key
 ```
 5. Чтобы остановить контейнер пропишите docker-compose stop
 
