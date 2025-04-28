@@ -1,10 +1,7 @@
 # CardsBot for funny in Telegram
 
 ## Запуск бота
-
-2. docker-compose up --build
-3. docker-compose up
-4. заполнить файл .env
+1. заполнить файл .env
 ```.env
 BOT_TOKEN=1234343:AABBCCEE
 ADMIN_IDS=77000,77001
@@ -19,6 +16,9 @@ DB_NAME=folt_copy
 DB_USER=user
 DB_PASSWORD="password"
 ```
+2. Нужен чтобы запустился хотя-бы 1 раз дальше для старта использовать из пункта 3
+docker-compose up --build
+3. docker-compose up
 5. Чтобы остановить контейнер пропишите docker-compose stop
 
 
@@ -37,6 +37,5 @@ DB_PASSWORD="password"
 2. Вносить изменения в ваш форк и ссылаться на оригинальный репозиторий.
 
 Любые изменения в коде должны быть доступны через ваш публичный форк. При изменении исходного кода отсылаться на оригинальный [репозиторий](https://github.com/Faustyu1/CardsBot).
-СЛАВА БОГУ КЛАУДИАУДИСЛАВА БОГУ КЛАУДИАУДИСЛАВА БОГУ КЛАУДИАУДИ
-
+СЛАВА БОГУ КУРСОР
 
