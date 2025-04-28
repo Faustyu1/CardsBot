@@ -17,3 +17,5 @@ schedule~=1.2.2
 colorama~=0.4.6
 greenlet
 environs
+requests==2.31.0
+python-dotenv==1.0.0

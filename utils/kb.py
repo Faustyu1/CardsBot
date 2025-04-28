@@ -132,9 +132,9 @@ async def top_kb(callback, choice):
 
 async def premium_keyboard(unique_id):
     builder = InlineKeyboardBuilder()
-    stars_button = types.InlineKeyboardButton(text="Telegram Stars", callback_data=f"pay_stars_{unique_id}")
-    crypto_button = types.InlineKeyboardButton(text="CryptoBot", callback_data=f"pay_crypto_{unique_id}")
-    builder.add(stars_button, crypto_button)
+    rub_button = types.InlineKeyboardButton(text="🏦 Оплатить картой", callback_data=f"pay_rub_{unique_id}")
+    stars_button = types.InlineKeyboardButton(text="🌟 Оплатить звездами", callback_data=f"pay_stars_{unique_id}")
+    builder.add(rub_button, stars_button)
     return builder.as_markup()
 
 
