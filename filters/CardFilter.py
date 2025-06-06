@@ -3,11 +3,17 @@ from aiogram.types import Message
 
 
 class CardFilter(BaseFilter):
-
     async def __call__(self, message: Message) -> bool:
-        if message.text is not None and message.text.casefold() in \
-                ["Карта".casefold(), "карта2".casefold(), "карта3".casefold(), "карта4".casefold(),
-                 "карта5".casefold(), "/cards@юзернеймбота".casefold(), "/cards".casefold()]:    
+        
+        if message.text is not None and message.text.casefold() in [
+            "Карта".casefold(),
+            "карта2".casefold(),
+            "карта3".casefold(),
+            "карта4".casefold(),
+            "карта5".casefold(),
+            "/cards".casefold(),
+            f"/cards@{(message.bot and (await message.bot.me()).username or 'юзернеймбота')}".casefold(),
+        ]:
             return True
-        else:
-            return False
+        
+        return False

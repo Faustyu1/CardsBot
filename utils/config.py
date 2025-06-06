@@ -35,7 +35,7 @@ class App:
     bot: Bot
     database: Database
 
-def load_config(path: str = None) -> App:
+def load_config(path: str | None = None) -> App:
     env = Env()
     env.read_env(path)
 

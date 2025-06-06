@@ -17,12 +17,14 @@ from handlers.admin_dialogs.admin_states import AddRefLinkSG
 def check_link(link: str) -> str:
     if len(link) > 16:
         raise ValueError("Слишком длинная ссылка")
-    if not re.fullmatch(r'[A-Za-z0-9\-]+', link):
+    if not re.fullmatch(r"[A-Za-z0-9\-]+", link):
         raise ValueError("Ссылка содержит недопустимые символы")
     return link
 
 
-async def error(message: Message, dialog_: Any, manager: DialogManager, link_error: ValueError):
+async def error(
+    message: Message, dialog_: Any, manager: DialogManager, link_error: ValueError
+):
     await message.answer(f"Произошла ошибка: {link_error.args[0]}")
 
 
@@ -34,19 +36,31 @@ async def link_created_getter(dialog_manager: DialogManager, bot: Bot, **kwargs)
     return {"users_link": links["link_user"], "groups_link": links["link_group"]}
 
 
-async def on_success(message: Message, widget: ManagedTextInput, dialog_manager: DialogManager, data_, **kwargs):
+async def on_success(
+    message: Message,
+    widget: ManagedTextInput,
+    dialog_manager: DialogManager,
+    data_,
+    **kwargs,
+):
     link = await get_ref_link(widget.get_value())
     if link is not None:
         await dialog_manager.switch_to(AddRefLinkSG.error)
     else:
         await dialog_manager.switch_to(AddRefLinkSG.all_ok)
 
+
 ref_links_add_dialog = Dialog(
     Window(
         Const("Введите имя новой ссылки:"),
-        TextInput(id="link_name", type_factory=check_link, on_success=on_success, on_error=error),
+        TextInput(
+            id="link_name",
+            type_factory=check_link,
+            on_success=on_success,
+            on_error=error,
+        ),
         Cancel(Const("В меню")),
-        state=AddRefLinkSG.get_link
+        state=AddRefLinkSG.get_link,
     ),
     Window(
         Format("Ссылка успешно зарегистрирована!"),
@@ -55,12 +69,12 @@ ref_links_add_dialog = Dialog(
         Cancel(Const("В меню")),
         parse_mode=ParseMode.HTML,
         getter=link_created_getter,
-        state=AddRefLinkSG.all_ok
+        state=AddRefLinkSG.all_ok,
     ),
     Window(
         Jinja("Ошибка! Cсылка уже зарегистрирована!"),
         Cancel(Const("В меню")),
         SwitchTo(Const("Создать ссылку"), id="reboot", state=AddRefLinkSG.get_link),
-        state=AddRefLinkSG.error
-    )
+        state=AddRefLinkSG.error,
+    ),
 )

@@ -8,9 +8,13 @@ from database.user import clear_season
 from handlers.admin_dialogs.admin_states import DelSeasonSG
 
 
-async def accept_clicked(callback: CallbackQuery, button: Button, manager: DialogManager):
+async def accept_clicked(
+    callback: CallbackQuery, button: Button, manager: DialogManager
+):
     try:
-        await callback.message.edit_text("Очистка начата", reply_markup=InlineKeyboardBuilder().as_markup())
+        await callback.message.edit_text(
+            "Очистка начата", reply_markup=InlineKeyboardBuilder().as_markup()
+        )
         await clear_season()
         await manager.switch_to(DelSeasonSG.season_del)
     except Exception as e:
@@ -21,11 +25,8 @@ async def accept_clicked(callback: CallbackQuery, button: Button, manager: Dialo
 season_delete_dialog = Dialog(
     Window(
         Const("Хотите сбросить сезон?"),
-        Row(
-            Cancel(Const("Нет")),
-            Next(Const("Да"))
-        ),
-        state=DelSeasonSG.accept_del
+        Row(Cancel(Const("Нет")), Next(Const("Да"))),
+        state=DelSeasonSG.accept_del,
     ),
     Window(
         Const("Точно???"),
@@ -33,24 +34,20 @@ season_delete_dialog = Dialog(
             Next(Const("Да")),
             Cancel(Const("Нет")),
         ),
-        state=DelSeasonSG.accept_2
+        state=DelSeasonSG.accept_2,
     ),
     Window(
         Const('Что бы сбросить сезон нажмите на кнопку "Сбросить"'),
         Button(Const("Сбросить"), id="__reset__", on_click=accept_clicked),
         Cancel(Const("Отмена")),
-
-        state=DelSeasonSG.accept_3
+        state=DelSeasonSG.accept_3,
     ),
     Window(
-        Const("Сезон сброшен!"),
-        Cancel(Const("В меню")),
-        state=DelSeasonSG.season_del
+        Const("Сезон сброшен!"), Cancel(Const("В меню")), state=DelSeasonSG.season_del
     ),
     Window(
         Format("Ошибка: {dialog_data[error]}"),
         Cancel(Const("В меню")),
-        state=DelSeasonSG.error
-    )
-
+        state=DelSeasonSG.error,
+    ),
 )

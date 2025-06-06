@@ -10,7 +10,11 @@ from .ref_link_dialogs import ref_link_dialogs
 dialogs_router = Router()
 
 dialogs_router.include_routers(
-    base_dialogs, ban_dialogs, add_admin_dialogs, promo_dialogs, ref_link_dialogs,
+    base_dialogs,
+    ban_dialogs,
+    add_admin_dialogs,
+    promo_dialogs,
+    ref_link_dialogs,
 )
 dialogs_router.message.middleware(AdminMiddleware())
 dialogs_router.callback_query.middleware(AdminMiddleware())

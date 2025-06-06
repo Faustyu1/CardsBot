@@ -9,5 +9,9 @@ from .change_nickname_dialog import change_nickname_dialog
 
 base_dialogs = Router()
 base_dialogs.include_routers(
-    admin_dialog, mailing_dialog, premium_dialog, season_delete_dialog, change_nickname_dialog
+    admin_dialog,
+    mailing_dialog,
+    premium_dialog,
+    season_delete_dialog,
+    change_nickname_dialog,
 )

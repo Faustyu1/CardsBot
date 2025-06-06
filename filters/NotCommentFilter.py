@@ -3,7 +3,6 @@ from aiogram.types import Message
 
 
 class NotCommentFilter(BaseFilter):
-
     async def check_first_message(self, message: Message) -> bool:
         if message.reply_to_message is not None:
             await self.check_first_message(message.reply_to_message)

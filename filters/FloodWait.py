@@ -1,7 +1,6 @@
-import time
-
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
+import time
 
 
 class RateLimitFilter(BaseFilter):
@@ -25,7 +24,10 @@ class RateLimitFilter(BaseFilter):
         return True
 
     def _cleanup_expired(self, current_time: float):
-        expired_keys = [user_id for user_id, last_time in self.last_request_time.items()
-                        if (current_time - last_time) > self.expiration_time]
+        expired_keys = [
+            user_id
+            for user_id, last_time in self.last_request_time.items()
+            if (current_time - last_time) > self.expiration_time
+        ]
         for user_id in expired_keys:
             del self.last_request_time[user_id]

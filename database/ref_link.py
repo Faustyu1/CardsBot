@@ -10,10 +10,9 @@ from utils.loader import engine
 
 async def get_ref_link(code: str) -> RefLink:
     async with AsyncSession(engine) as session:
-        ref_link = (await session.execute(
-            select(RefLink)
-            .where(RefLink.code == code)
-        )).scalar_one_or_none()
+        ref_link = (
+            await session.execute(select(RefLink).where(RefLink.code == code))
+        ).scalar_one_or_none()
         return ref_link
 
 
@@ -27,10 +26,9 @@ async def create_ref_link(code: str) -> RefLink:
 
 async def delete_ref_link(code: str) -> None:
     async with AsyncSession(engine) as session:
-        ref_link = (await session.execute(
-            select(RefLink).
-            where(RefLink.code == code)
-        )).scalar_one_or_none()
+        ref_link = (
+            await session.execute(select(RefLink).where(RefLink.code == code))
+        ).scalar_one_or_none()
         if ref_link is None:
             return
         await session.delete(ref_link)

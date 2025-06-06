@@ -1,7 +1,17 @@
 import datetime
 from typing import List
 
-from sqlalchemy import ARRAY, BigInteger, Boolean, Column, Date, DateTime, Integer, String, VARCHAR
+from sqlalchemy import (
+    ARRAY,
+    BigInteger,
+    Boolean,
+    Column,
+    Date,
+    DateTime,
+    Integer,
+    String,
+    VARCHAR,
+)
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.mutable import MutableList
@@ -13,7 +23,7 @@ class Base(AsyncAttrs, DeclarativeBase):
 
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
@@ -39,29 +49,32 @@ class User(Base):
         Date, nullable=True, default=datetime.datetime.now().date()
     )
     in_pm: Mapped[bool] = mapped_column(Boolean)
-    status: Mapped[str] = mapped_column(VARCHAR(40), nullable=False, default="USER", server_default="USER")
-    last_bonus_get: Mapped[datetime.datetime] = mapped_column(
-        DateTime, nullable=True
+    status: Mapped[str] = mapped_column(
+        VARCHAR(40), nullable=False, default="USER", server_default="USER"
     )
+    last_bonus_get: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
     from_link: Mapped[str] = mapped_column(String, nullable=True, default=None)
     coins: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
     luck: Mapped[bool] = mapped_column(Boolean, default=False)
-    last_dice_play: Mapped[datetime.datetime] = mapped_column(
-        DateTime, nullable=True
-    )
+    last_dice_play: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
 
     def check_promo_expired(self, promo: str) -> bool:
-        return promo in self.expired_promo_codes if self.expired_promo_codes is not None else False
+        return (
+            promo in self.expired_promo_codes
+            if self.expired_promo_codes is not None
+            else False
+        )
 
     def check_bonus_available(self) -> bool:
         if self.last_bonus_get is None:
             return True
-        return datetime.datetime.now() >= self.last_bonus_get + datetime.timedelta(hours=4)
+        return datetime.datetime.now() >= self.last_bonus_get + datetime.timedelta(
+            hours=4
+        )
 
 
 class App(Base):
-
-    __tablename__ = 'app'
+    __tablename__ = "app"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     yesterday_users_active: Mapped[int] = mapped_column(Integer, nullable=True)
@@ -69,12 +82,14 @@ class App(Base):
 
 
 class Group(Base):
-    __tablename__ = 'groups'
+    __tablename__ = "groups"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     group_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
     title: Mapped[str] = mapped_column(VARCHAR(100), nullable=False)
-    added_at: Mapped[datetime.date] = mapped_column(Date, nullable=False, default=datetime.datetime.now().date())
+    added_at: Mapped[datetime.date] = mapped_column(
+        Date, nullable=False, default=datetime.datetime.now().date()
+    )
     last_activity: Mapped[datetime.date] = mapped_column(
         Date, nullable=False, default=datetime.datetime.now().date()
     )
@@ -84,7 +99,7 @@ class Group(Base):
 
 
 class Card(Base):
-    __tablename__ = 'cards'
+    __tablename__ = "cards"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(VARCHAR(80), nullable=False)
@@ -95,7 +110,7 @@ class Card(Base):
 
 
 class Promo(Base):
-    __tablename__ = 'promo_codes'
+    __tablename__ = "promo_codes"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     code: Mapped[str] = mapped_column(VARCHAR(80), nullable=False, unique=True)
@@ -115,7 +130,7 @@ class Promo(Base):
 
 
 class BonusLink(Base):
-    __tablename__ = 'bonus_links'
+    __tablename__ = "bonus_links"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     code: Mapped[str] = mapped_column(VARCHAR(80), nullable=False, unique=True)
@@ -124,14 +139,14 @@ class BonusLink(Base):
 
 
 class RefLink(Base):
-    __tablename__ = 'ref_links'
+    __tablename__ = "ref_links"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     code: Mapped[str] = mapped_column(VARCHAR(80), nullable=False, unique=True)
 
 
 class LimitedCards(Base):
-    __tablename__ = 'limited_cards'
+    __tablename__ = "limited_cards"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
