@@ -29,7 +29,8 @@
       "name": "Карта4",
       "photo": "https://tinypic.host/",
       "points": "10000",
-      "rarity": "Легендарная"
+      "rarity": "Легендарная",
+			"description": "Описание"
       }
   ]
 }
