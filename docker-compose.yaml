@@ -1,28 +1,47 @@
-version: '3.3'
-
 services:
+  db:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      - DB_HOST=db
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --host=${DB_HOST} --port=${DB_PORT} -U ${DB_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_network
+    
   app:
     build: .
     container_name: cardsbot
     environment:
-      - TZ=Europe/Moscow
+      - TZ=${TZ}
       - BOT_TOKEN=${BOT_TOKEN}
       - ADMIN_IDS=${ADMIN_IDS}
       - CRYPTO_TOKEN=${CRYPTO_TOKEN}
       - FLYER_TOKEN=${FLYER_TOKEN}
-      - DB_DRIVER=${DB_DRIVER}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-    networks:
-      - app_network
     volumes:
       - .:/app
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     restart: always
+    depends_on:
+      - db
+    networks:
+      - app_network
+
 networks:
   app_network:
     driver: bridge
+
+volumes:
+  postgres_data:

@@ -3,6 +3,6 @@ from database.models import Base
 from utils.loader import engine
 
 
-async def setup_db():
+async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

@@ -11,7 +11,7 @@ from utils.logger import *
 import logging
 
 from utils import loader
-from database import setup_db
+from database import init_db
 from database.cards import parse_cards, parse_limited_cards
 from handlers import commands_router, premium_router, profile_router, text_triggers_router, shop_router, shop_cards_router
 from handlers.admin_dialogs import dialogs_router
@@ -23,7 +23,7 @@ dp = Dispatcher(storage=MemoryStorage(), on_startup=on_startup)
 logger = logging.getLogger(__name__)
 
 async def main():
-    await setup_db()
+    await init_db()
     dp.include_routers(commands_router, profile_router, 
                        premium_router, shop_router, 
                        dialogs_router, shop_cards_router,
