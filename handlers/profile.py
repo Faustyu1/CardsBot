@@ -62,7 +62,7 @@ async def user_profile(msg: Message, dialog_manager: DialogManager):
     titul = await get_titul(user.card_count)
     collected_cards = len(user.cards)
     total_cards = len(await get_all_cards())
-    if user.love_card
+    if user.love_card:
         if user.love_card["is_limited"]:
             favorite_card = await get_lcard(user.love_card["id"])
         else:
